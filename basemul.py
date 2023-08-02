@@ -23,6 +23,46 @@ def mla_tpm_vec(m_col, m_row, v, acc):
         acc += s * col
     return acc
 
+def radix2_16(a, b, sqrt_tw):
+    a0, a1 = a[:8], a[8:]
+    b0, b1 = b[:8], b[8:]
+
+    a0, a1 = a0 + sqrt_tw * a1, a0 - sqrt_tw * a1
+    b0, b1 = b0 + sqrt_tw * b1, b0 - sqrt_tw * b1
+
+    c0 = 0
+    b0_col = b0
+    b0_row = sqrt_tw * b0
+    c0 = mla_tpm_vec(b0_col, b0_row, a0, c0)
+
+    c1 = 0
+    b1_col = b1
+    b1_row = -sqrt_tw * b1
+    c1 = mla_tpm_vec(b1_col, b1_row, a1, c1)
+
+    c0, c1 = (1 / Zq(2)) * (c0 + c1), (1 / Zq(2 * sqrt_tw)) * (c0 - c1)
+    return vector([*c0, *c1])
+
+def kara_16(a, b, tw):
+    a0, a1 = a[:8], a[8:]
+    b0, b1 = b[:8], b[8:]
+
+    c0 = 0
+    m1_col = b0
+    m1_row = tw * b1
+    c0 = mla_tpm_vec(m1_col, m1_row, a0 + a1, c0)
+    c1 = c0
+
+    m2_col = tw * b1 - b0
+    m2_row = tw * b0 - tw * b1
+    c0 = mla_tpm_vec(m2_col, m2_row, a1, c0)
+
+    m3_col = b1 - b0
+    m3_row = b0 - tw * b1
+    c1 = mla_tpm_vec(m3_col, m3_row, a0, c1)
+
+    return vector([*c0, *c1])
+
 def main_basemul(in1_lay2, in2_lay2):
     out_lay2 = [[0 for j in range(9)] for i in range(10)]
     for i in range(10):
@@ -31,47 +71,10 @@ def main_basemul(in1_lay2, in2_lay2):
             a = to_vec(in1_lay2[i][j], 16)
             b = to_vec(in2_lay2[i][j], 16)
             if i % 2 == 0:
-                # ntt 2
                 sqrt_tw = w10 ** (i // 2) * w9 ** (5 * j)
-
-                a0, a1 = a[:8], a[8:]
-                b0, b1 = b[:8], b[8:]
-
-                a0, a1 = a0 + sqrt_tw * a1, a0 - sqrt_tw * a1
-                b0, b1 = b0 + sqrt_tw * b1, b0 - sqrt_tw * b1
-
-                c0 = 0
-                b0_col = b0
-                b0_row = sqrt_tw * b0
-                c0 = mla_tpm_vec(b0_col, b0_row, a0, c0)
-
-                c1 = 0
-                b1_col = b1
-                b1_row = -sqrt_tw * b1
-                c1 = mla_tpm_vec(b1_col, b1_row, a1, c1)
-
-                c0, c1 = (1 / Zq(2)) * (c0 + c1), (1 / Zq(2 * sqrt_tw)) * (c0 - c1)
-                c = vector([*c0, *c1])
+                c = radix2_16(a, b, sqrt_tw)
             else:
-                # karatsuba
-                a0, a1 = a[:8], a[8:]
-                b0, b1 = b[:8], b[8:]
-
-                c0 = 0
-                m1_col = b0
-                m1_row = tw * b1
-                c0 = mla_tpm_vec(m1_col, m1_row, a0 + a1, c0)
-                c1 = c0
-
-                m2_col = tw * b1 - b0
-                m2_row = tw * b0 - tw * b1
-                c0 = mla_tpm_vec(m2_col, m2_row, a1, c0)
-
-                m3_col = b1 - b0
-                m3_row = b0 - tw * b1
-                c1 = mla_tpm_vec(m3_col, m3_row, a0, c1)
-
-                c = vector([*c0, *c1])
+                c = kara_16(a, b, tw)
             out_lay2[i][j] = Rq(list(c))
     return out_lay2
 
@@ -85,7 +88,15 @@ def main_basemul_ref(in1_lay2, in2_lay2):
 def low_basemul(in1_lay1, in2_lay1):
     out_lay1 = [0 for i in range(10)]
     for i in range(10):
-        out_lay1[i] = in1_lay1[i] * in2_lay1[i] % (x ** 16 - w10 ** i)
+        tw = w10 ** i
+        a = to_vec(in1_lay1[i], 16)
+        b = to_vec(in2_lay1[i], 16)
+        if i % 2 == 0:
+            sqrt_tw = w10 ** (i // 2)
+            c = radix2_16(a, b, sqrt_tw)
+        else:
+            c = kara_16(a, b, tw)
+        out_lay1[i] = Rq(list(c))
         out_lay1[i] *= w10 ** i
     return out_lay1
 
