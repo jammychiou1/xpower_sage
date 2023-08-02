@@ -3,6 +3,7 @@ from ntt3 import ntt3_db, intt3_sx_noh0
 
 w9 = w ** (4590 // 9)
 
+# TODO: revisit add g0/g3/g6 timing
 def ntt9_qd(f0, f1, f2, f3, f4, f5, f6, f7, f8):
     f0, f3, f6 = ntt3_db(f0, f3, f6)
     g3 = 2 * f3
