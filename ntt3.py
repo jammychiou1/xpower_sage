@@ -45,5 +45,8 @@ def ntt3_db_nof0(f1, f2):
 
     return h0, h1, h2
 
+def intt3_sx(h0, h1, h2):
+    return ntt3_db(h0, h2, h1)
+
 def intt3_sx_noh0(h1, h2):
     return ntt3_db_nof0(h2, h1)
