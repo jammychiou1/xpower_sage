@@ -1,5 +1,5 @@
 from params import w, x
-from ntt9 import ntt9_4x, intt9_36x, ntt9_ref, intt9_ref
+from ntt9 import ntt9_2x, intt9_18x, ntt9_ref, intt9_ref
 from ntt10 import ntt10_4x_nof3456, ntt10_4x_nof34567, intt10_40x, ntt10_ref, intt10_ref
 from basemul import main_basemul, main_basemul_ref
 
@@ -16,8 +16,7 @@ def insert(f, i, j):
     base = (81 * i + 10 * j) % 90 * 16
     return x ** base * f
 
-# 4x
-def main_lay1_4x(in_poly):
+def main_lay1(in_poly):
     out_ntt = [[0 for j in range(9)] for i in range(10)]
     for j in range(9):
         if j <= 2:
@@ -60,7 +59,7 @@ def main_lay1_4x(in_poly):
         out_ntt[9][j] = h9
     return out_ntt
 
-def imain_lay1_40x(in_ntt):
+def imain_lay1(in_ntt):
     out_poly = 0
     for j in range(9):
         h0 = in_ntt[0][j]
@@ -146,7 +145,7 @@ def imain_lay1_ref(in_ntt):
 
     return out_poly
 
-def main_lay2_4x(in_ntt):
+def main_lay2(in_ntt):
     out_ntt = [[0 for j in range(9)] for i in range(10)]
     for i in range(10):
         f0 = in_ntt[i][0]
@@ -159,7 +158,7 @@ def main_lay2_4x(in_ntt):
         f7 = in_ntt[i][7]
         f8 = in_ntt[i][8]
 
-        h0, h1, h2, h3, h4, h5, h6, h7, h8 = ntt9_4x(f0, f1, f2, f3, f4, f5, f6, f7, f8)
+        h0, h1, h2, h3, h4, h5, h6, h7, h8 = ntt9_2x(f0, f1, f2, f3, f4, f5, f6, f7, f8)
 
         out_ntt[i][0] = h0
         out_ntt[i][1] = h1
@@ -172,7 +171,7 @@ def main_lay2_4x(in_ntt):
         out_ntt[i][8] = h8
     return out_ntt
 
-def imain_lay2_36x(in_ntt):
+def imain_lay2(in_ntt):
     out_ntt = [[0 for j in range(9)] for i in range(10)]
     for i in range(10):
         h0 = in_ntt[i][0]
@@ -185,7 +184,7 @@ def imain_lay2_36x(in_ntt):
         h7 = in_ntt[i][7]
         h8 = in_ntt[i][8]
 
-        f0, f1, f2, f3, f4, f5, f6, f7, f8 = intt9_36x(h0, h1, h2, h3, h4, h5, h6, h7, h8)
+        f0, f1, f2, f3, f4, f5, f6, f7, f8 = intt9_18x(h0, h1, h2, h3, h4, h5, h6, h7, h8)
 
         out_ntt[i][0] = f0
         out_ntt[i][1] = f1
@@ -251,24 +250,19 @@ def imain_lay2_ref(in_ntt):
     return out_ntt
 
 def forward(in_poly):
-    lay1_4x = main_lay1_4x(in_poly)
-    lay2_16x = main_lay2_4x(lay1_4x)
-    return lay2_16x
+    lay1 = main_lay1(in_poly) # 1 -> 4
+    lay2 = main_lay2(lay1) # 4 -> 8
+    return lay2
 
 def backward(in_lay2):
-    lay1_34x = imain_lay2_36x(in_lay2)
-    out_poly_1360x = imain_lay1_40x(lay1_34x)
-    return out_poly_1360x
+    lay1 = imain_lay2(in_lay2) # 64 -> 1152
+    out_poly = imain_lay1(lay1) # 1152 -> 170
+    return out_poly
 
 def mainmul(in1_poly, in2_poly):
-    in1_lay2 = forward(in1_poly)
-    in2_lay2 = forward(in2_poly)
-    out_lay2 = main_basemul(in1_lay2, in2_lay2)
-    out_main_1360x = backward(out_lay2)
+    in1_lay2 = forward(in1_poly) # 1 -> 8
+    in2_lay2 = forward(in2_poly) # 1 -> 8
+    out_lay2 = main_basemul(in1_lay2, in2_lay2) # 8, 8 -> 64
+    out_main = backward(out_lay2) # 64 -> 170
 
-    return out_main_1360x
-
-# print([w10 ** i for i in range(10)])
-# [1, 2981, 2776, 2274, 2478, 4590, 1610, 1815, 2317, 2113]
-# print([w9 ** j for j in range(9)])
-# [1, 2985, 3685, 4280, 3638, 1715, 310, 2559, 3782]
+    return out_main

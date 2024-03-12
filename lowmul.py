@@ -116,5 +116,5 @@ def lowmul(in1_poly, in2_poly):
     in2_lay1 = low_lay1(in2_poly)
     out_lay1 = low_basemul(in1_lay1, in2_lay1)
     out_low = ilow_lay1(out_lay1)
-    out_low = out_low[:81] + 640 * (in1_poly[80] * in2_poly[0] + in1_poly[0] * in2_poly[80]) * x ** 80
+    out_low = out_low[:81] + 170 * (in1_poly[80] * in2_poly[0] + in1_poly[0] * in2_poly[80]) * x ** 80
     return out_low

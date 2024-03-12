@@ -90,7 +90,7 @@ def low_basemul(in1_lay1, in2_lay1):
         b = to_vec(in2_lay1[i], 16)
         c = mixed(a, b, i, 0, 4)
         out_lay1[i] = Rq(list(c))
-        out_lay1[i] *= w10 ** i
+        out_lay1[i] *= 72 * w10 ** i
     return out_lay1
 
 def low_basemul_ref(in1_lay1, in2_lay1):
