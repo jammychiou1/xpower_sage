@@ -21,8 +21,6 @@ def case_rand():
         poly += Zq(random.randrange(4591)) * x ** i
     return poly
 
-# in1_poly = case3()
-# in2_poly = case3()
 in1_poly = case_rand()
 in2_poly = case_rand()
 
@@ -32,6 +30,7 @@ out_main_1360x = mainmul(in1_poly, in2_poly)
 # print(out_main_ref)
 # print(out_main_1360x / 1360 - out_main_ref)
 
+# 170x
 out_low_640x = lowmul(in1_poly, in2_poly)
 # out_low_ref = in1_poly * in2_poly % (x ** 81)
 # print(out_low_640x)

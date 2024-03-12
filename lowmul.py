@@ -1,5 +1,5 @@
 from params import x
-from ntt10 import ntt10_qd_nof34567, intt10_40x_nof3456, ntt10_ref, intt10_ref
+from ntt10 import ntt10_4x_nof34567, intt10_40x_nof3456, ntt10_ref, intt10_ref
 from basemul import low_basemul, low_basemul_ref
 
 def extract(poly, i):
@@ -22,7 +22,7 @@ def low_lay1(in_poly):
     f1 = extract(in_poly, 3)
     f2 = extract(in_poly, 4)
 
-    h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_qd_nof34567(f0, f1, f2, f8, f9)
+    h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_4x_nof34567(f0, f1, f2, f8, f9)
 
     out_ntt[0] = h0
     out_ntt[1] = h1

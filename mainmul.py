@@ -1,6 +1,6 @@
 from params import w, x
-from ntt9 import ntt9_qd, intt9_36x, ntt9_ref, intt9_ref
-from ntt10 import ntt10_qd_nof3456, ntt10_qd_nof34567, intt10_40x, ntt10_ref, intt10_ref
+from ntt9 import ntt9_4x, intt9_36x, ntt9_ref, intt9_ref
+from ntt10 import ntt10_4x_nof3456, ntt10_4x_nof34567, intt10_40x, ntt10_ref, intt10_ref
 from basemul import main_basemul, main_basemul_ref
 
 w10 = w ** (4590 // 10)
@@ -16,24 +16,26 @@ def insert(f, i, j):
     base = (81 * i + 10 * j) % 90 * 16
     return x ** base * f
 
-def main_lay1_qd(in_poly):
+# 4x
+def main_lay1_4x(in_poly):
     out_ntt = [[0 for j in range(9)] for i in range(10)]
     for j in range(9):
         if j <= 2:
+            # extract(in_poly, (j + t) % 10, j) for t in range(5, 11)
             f7 = extract(in_poly, (j + 5) % 10, j)
             f8 = extract(in_poly, (j + 6) % 10, j)
             f9 = extract(in_poly, (j + 7) % 10, j)
             f0 = extract(in_poly, (j + 8) % 10, j)
             f1 = extract(in_poly, (j + 9) % 10, j)
             f2 = extract(in_poly, j, j)
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_qd_nof3456(f0, f1, f2, f7, f8, f9)
+            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_4x_nof3456(f0, f1, f2, f7, f8, f9)
         else:
             f8 = extract(in_poly, (j + 6) % 10, j)
             f9 = extract(in_poly, (j + 7) % 10, j)
             f0 = extract(in_poly, (j + 8) % 10, j)
             f1 = extract(in_poly, (j + 9) % 10, j)
             f2 = extract(in_poly, j, j)
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_qd_nof34567(f0, f1, f2, f8, f9)
+            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_4x_nof34567(f0, f1, f2, f8, f9)
 
         h0 = h0
         h1 = h1 * w10 ** (j + 8)
@@ -144,7 +146,7 @@ def imain_lay1_ref(in_ntt):
 
     return out_poly
 
-def main_lay2_qd(in_ntt):
+def main_lay2_4x(in_ntt):
     out_ntt = [[0 for j in range(9)] for i in range(10)]
     for i in range(10):
         f0 = in_ntt[i][0]
@@ -157,7 +159,7 @@ def main_lay2_qd(in_ntt):
         f7 = in_ntt[i][7]
         f8 = in_ntt[i][8]
 
-        h0, h1, h2, h3, h4, h5, h6, h7, h8 = ntt9_qd(f0, f1, f2, f3, f4, f5, f6, f7, f8)
+        h0, h1, h2, h3, h4, h5, h6, h7, h8 = ntt9_4x(f0, f1, f2, f3, f4, f5, f6, f7, f8)
 
         out_ntt[i][0] = h0
         out_ntt[i][1] = h1
@@ -249,9 +251,9 @@ def imain_lay2_ref(in_ntt):
     return out_ntt
 
 def forward(in_poly):
-    lay1_qd = main_lay1_qd(in_poly)
-    lay2_hxd = main_lay2_qd(lay1_qd)
-    return lay2_hxd
+    lay1_4x = main_lay1_4x(in_poly)
+    lay2_16x = main_lay2_4x(lay1_4x)
+    return lay2_16x
 
 def backward(in_lay2):
     lay1_34x = imain_lay2_36x(in_lay2)

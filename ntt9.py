@@ -1,30 +1,30 @@
 from params import w
-from ntt3 import ntt3_db, intt3_sx
+from ntt3 import ntt3_2x, intt3_6x
 
 w9 = w ** (4590 // 9)
 
-def ntt9_qd(f0, f1, f2, f3, f4, f5, f6, f7, f8):
-    f0, f3, f6 = ntt3_db(f0, f3, f6)
+def ntt9_4x(f0, f1, f2, f3, f4, f5, f6, f7, f8):
+    f0, f3, f6 = ntt3_2x(f0, f3, f6)
 
-    f1, f7, f4 = ntt3_db(f1, f7, f4)
+    f1, f7, f4 = ntt3_2x(f1, f7, f4)
     f7 *= w9 ** 8
     f4 *= w9
 
-    f8, f2, f5 = ntt3_db(f8, f2, f5)
+    f8, f2, f5 = ntt3_2x(f8, f2, f5)
     f2 *= w9 ** 8
     f5 *= w9
 
-    h0, h3, h6 = ntt3_db(f0, f1, f8)
+    h0, h3, h6 = ntt3_2x(f0, f1, f8)
 
     f7, f2 = f2, f7
 
-    h1, h4, h7 = intt3_sx(f3, f7, f4)
-    h8, h5, h2 = intt3_sx(f6, f2, f5)
+    h1, h4, h7 = intt3_6x(f3, f7, f4) # TODO: check
+    h8, h5, h2 = intt3_6x(f6, f2, f5)
 
     return h0, h1, h2, h3, h4, h5, h6, h7, h8
 
 def intt9_36x(h0, h1, h2, h3, h4, h5, h6, h7, h8):
-    return ntt9_qd(h0, h8, h7, h6, h5, h4, h3, h2, h1)
+    return ntt9_4x(h0, h8, h7, h6, h5, h4, h3, h2, h1)
 
 def ntt9_ref(f0, f1, f2, f3, f4, f5, f6, f7, f8):
     fjs = [f0, f1, f2, f3, f4, f5, f6, f7, f8]

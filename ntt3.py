@@ -2,7 +2,7 @@ from params import w
 
 w3 = w ** (4590 // 3)
 
-def ntt3_db(f0, f1, f2):
+def ntt3_2x(f0, f1, f2):
     red = w3 - w3 ** 2
 
     t0i = f1 + f2
@@ -17,7 +17,7 @@ def ntt3_db(f0, f1, f2):
 
     return h0, h1, h2
 
-def ntt3_db_noh0(f0, f1, f2):
+def ntt3_2x_noh0(f0, f1, f2):
     red = w3 - w3 ** 2
 
     t0i = f1 + f2
@@ -31,7 +31,7 @@ def ntt3_db_noh0(f0, f1, f2):
 
     return h1, h2
 
-def ntt3_db_nof0(f1, f2):
+def ntt3_2x_nof0(f1, f2):
     red = w3 - w3 ** 2
 
     t0i = f1 + f2
@@ -45,8 +45,8 @@ def ntt3_db_nof0(f1, f2):
 
     return h0, h1, h2
 
-def intt3_sx(h0, h1, h2):
-    return ntt3_db(h0, h2, h1)
+def intt3_6x(h0, h1, h2):
+    return ntt3_2x(h0, h2, h1)
 
-def intt3_sx_noh0(h1, h2):
-    return ntt3_db_nof0(h2, h1)
+def intt3_6x_noh0(h1, h2):
+    return ntt3_2x_nof0(h2, h1)
