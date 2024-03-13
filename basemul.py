@@ -4,11 +4,6 @@ from sage.all import vector
 w10 = w ** (4590 // 10)
 w9 = w ** (4590 // 9)
 
-# V16 = VectorSpace(Zq, 16)
-# M16 = MatrixSpace(Zq, 16)
-# V8 = VectorSpace(Zq, 8)
-# M8 = MatrixSpace(Zq, 8)
-
 def to_vec(f, dim):
     return vector(Zq, [f[i] for i in range(dim)])
 
@@ -71,7 +66,7 @@ def main_basemul(in1_lay2, in2_lay2):
             tw = w10 ** i * w9 ** j
             a = to_vec(in1_lay2[i][j], 16)
             b = to_vec(in2_lay2[i][j], 16)
-            c = mixed(a, b, i, j, 4)
+            c = mixed(a, b, i, j, 8)
             out_lay2[i][j] = Rq(list(c))
     return out_lay2
 
@@ -81,7 +76,7 @@ def low_basemul(in1_lay1, in2_lay1):
         tw = w10 ** i
         a = to_vec(in1_lay1[i], 16)
         b = to_vec(in2_lay1[i], 16)
-        c = mixed(a, b, i, 0, 4)
+        c = mixed(a, b, i, 0, 8)
         out_lay1[i] = Rq(list(c))
         out_lay1[i] *= 72 * w10 ** i
     return out_lay1
