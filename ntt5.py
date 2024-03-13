@@ -93,62 +93,44 @@ def ntt5_4x_nof03(f1, f2, f4):
     return h0, h1, h2, h3, h4
 
 def ntt5_4x_noh04(f0, f1, f2, f3, f4):
-    ci0 = f1 + f4
-    ci1 = f3 + f2
-    ct0i = ci0 + ci1
-    # h0 = 4 * (f0 + ct0i)
-    ct0i -= 4 * f0
-    ct0o = - ct0i
-    ct1i = ci0 - ci1
-    ct1o = red * ct1i
-    co0 = ct0o + ct1o
-    co1 = ct0o - ct1o
+    v0, v1, v2, v3, v4 = f0, f1, f2, f4, f3
+    v1, v3 = v1 + v3, v1 - v3
+    v2, v4 = v2 + v4, v2 - v4
 
-    ni0 = f1 - f4
-    ni1 = f3 - f2
-    nt0i = ni0 - ni1
-    nt1i = ni1
-    nt2i = -ni0 - ni1
-    nt0o = green * nt0i
-    nt1o = blue * nt1i
-    nt2o = yellow * nt2i
-    no0 = nt0o + nt1o
-    no1 = nt1o + nt2o
+    v1, v2 = v1 + v2, v1 - v2
+    v1 = 4 * v0 - v1
+    v2 = red * v2
+    v1, v2 = v1 + v2, v1 - v2
 
-    h1 = co0 + no0
-    h2 = co1 + no1
-    # h4 = co0 - no0
-    h3 = co1 - no1
+    v3, v4, v5 = v3, v3 + v4, v4
+    v3, v4, v5 = green * v3, blue * v4, yellow * v5
+    v3, v4 = v3 - v5, v4 - v3 - v5
+
+    v1 = v1 + v3
+    v2, v4 = v2 + v4, v2 - v4
+
+    h1, h3, h2 = v1, v2, v4
 
     return h1, h2, h3
 
 def ntt5_4x_noh23(f0, f1, f2, f3, f4):
-    ci0 = f1 + f4
-    ci1 = f3 + f2
-    ct0i = ci0 + ci1
-    h0 = 4 * (f0 + ct0i)
-    ct0i -= 4 * f0
-    ct0o = - ct0i
-    ct1i = ci0 - ci1
-    ct1o = red * ct1i
-    co0 = ct0o + ct1o
-    # co1 = ct0o - ct1o
+    v0, v1, v2, v3, v4 = f0, f1, f2, f4, f3
+    v1, v3 = v1 + v3, v1 - v3
+    v2, v4 = v2 + v4, v2 - v4
 
-    ni0 = f1 - f4
-    ni1 = f3 - f2
-    nt0i = ni0 - ni1
-    nt1i = ni1
-    # nt2i = -ni0 - ni1
-    nt0o = green * nt0i
-    nt1o = blue * nt1i
-    # nt2o = yellow * nt2i
-    no0 = nt0o + nt1o
-    # no1 = nt1o + nt2o
+    v1, v2 = v1 + v2, v1 - v2
+    v0, v1 = v0 + v1, 4 * v0 - v1
+    v2 = red * v2
+    v0 = 4 * v0
+    v1 = v1 + v2
 
-    h1 = co0 + no0
-    # h2 = co1 + no1
-    h4 = co0 - no0
-    # h3 = co1 - no1
+    v3, v5 = v3, v4
+    v3, v5 = green * v3, yellow * v5
+    v3 = v3 - v5
+
+    v1, v3 = v1 + v3, v1 - v3
+
+    h0, h1, h4 = v0, v1, v3
 
     return h0, h1, h4
 
