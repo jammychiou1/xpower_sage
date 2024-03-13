@@ -43,15 +43,3 @@ def intt10_40x(h0, h1, h2, h3, h4, h5, h6, h7, h8, h9):
 
 def intt10_40x_nof3456(h0, h1, h2, h3, h4, h5, h6, h7, h8, h9):
     return ntt10_4x_noh3456(h0, h9, h8, h7, h6, h5, h4, h3, h2, h1)
-
-def ntt10_ref(f0, f1, f2, f3, f4, f5, f6, f7, f8, f9):
-    fis = [f0, f1, f2, f3, f4, f5, f6, f7, f8, f9]
-    his = [0 for i in range(10)]
-    for i in range(10):
-        for ii in range(10):
-            his[i] += w10 ** (i * ii) * fis[ii]
-    return his[0], his[1], his[2], his[3], his[4], his[5], his[6], his[7], his[8], his[9]
-
-def intt10_ref(h0, h1, h2, h3, h4, h5, h6, h7, h8, h9):
-    f0, f1, f2, f3, f4, f5, f6, f7, f8, f9 = ntt10_ref(h0, h9, h8, h7, h6, h5, h4, h3, h2, h1)
-    return f0 / 10, f1 / 10, f2 / 10, f3 / 10, f4 / 10, f5 / 10, f6 / 10, f7 / 10, f8 / 10, f9 / 10

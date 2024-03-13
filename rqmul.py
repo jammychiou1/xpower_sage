@@ -27,17 +27,8 @@ in2_poly = case_rand()
 #list(map(Zq, [1 if i == 1 else 0 for i in range(9)]))
 
 out_main = mainmul(in1_poly, in2_poly)
-# out_main_ref = in1_poly * in2_poly % (x ** 1440 - 1)
-# print(out_main_1360x)
-# print(out_main_ref)
-# print(out_main_1360x / 1360 - out_main_ref)
 
-# 170x
 out_low = lowmul(in1_poly, in2_poly)
-# out_low_ref = in1_poly * in2_poly % (x ** 81)
-# print(out_low_640x)
-# print(out_low_ref)
-# print(out_low_640x / 640 - out_low_ref)
 
 def crt(main, low):
     coefs = [0 for i in range(1521)]

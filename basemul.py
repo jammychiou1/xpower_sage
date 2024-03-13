@@ -75,13 +75,6 @@ def main_basemul(in1_lay2, in2_lay2):
             out_lay2[i][j] = Rq(list(c))
     return out_lay2
 
-def main_basemul_ref(in1_lay2, in2_lay2):
-    out_lay2 = [[0 for j in range(9)] for i in range(10)]
-    for i in range(10):
-        for j in range(9):
-            out_lay2[i][j] = in1_lay2[i][j] * in2_lay2[i][j] % (x ** 16 - w10 ** i * w9 ** j)
-    return out_lay2
-
 def low_basemul(in1_lay1, in2_lay1):
     out_lay1 = [0 for i in range(10)]
     for i in range(10):
@@ -91,10 +84,4 @@ def low_basemul(in1_lay1, in2_lay1):
         c = mixed(a, b, i, 0, 4)
         out_lay1[i] = Rq(list(c))
         out_lay1[i] *= 72 * w10 ** i
-    return out_lay1
-
-def low_basemul_ref(in1_lay1, in2_lay1):
-    out_lay1 = [0 for i in range(10)]
-    for i in range(10):
-        out_lay1[i] = in1_lay1[i] * in2_lay1[i] % (x ** 16 - w10 ** i)
     return out_lay1

@@ -54,14 +54,3 @@ def ntt9_2x(f0, f1, f2, f3, f4, f5, f6, f7, f8):
 def intt9_18x(h0, h1, h2, h3, h4, h5, h6, h7, h8):
     return ntt9_2x(h0, h8, h7, h6, h5, h4, h3, h2, h1)
 
-def ntt9_ref(f0, f1, f2, f3, f4, f5, f6, f7, f8):
-    fjs = [f0, f1, f2, f3, f4, f5, f6, f7, f8]
-    hjs = [0 for j in range(9)]
-    for j in range(9):
-        for jj in range(9):
-            hjs[j] += w9 ** (j * jj) * fjs[jj]
-    return hjs[0], hjs[1], hjs[2], hjs[3], hjs[4], hjs[5], hjs[6], hjs[7], hjs[8]
-
-def intt9_ref(h0, h1, h2, h3, h4, h5, h6, h7, h8):
-    f0, f1, f2, f3, f4, f5, f6, f7, f8 = ntt9_ref(h0, h8, h7, h6, h5, h4, h3, h2, h1)
-    return f0 / 9, f1 / 9, f2 / 9, f3 / 9, f4 / 9, f5 / 9, f6 / 9, f7 / 9, f8 / 9
