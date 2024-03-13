@@ -133,9 +133,3 @@ def ntt5_4x_noh23(f0, f1, f2, f3, f4):
     h0, h1, h4 = v0, v1, v3
 
     return h0, h1, h4
-
-def intt5_20x_nof04(h0, h1, h2, h3, h4):
-    return ntt5_4x_noh04(h0, h4, h3, h2, h1)
-
-def intt5_20x_nof23(h0, h1, h2, h3, h4):
-    return ntt5_4x_noh23(h0, h4, h3, h2, h1)
