@@ -18,45 +18,20 @@ def insert(f, i, j):
 
 def main_lay1(in_poly):
     out_ntt = [[0 for j in range(9)] for i in range(10)]
+
+    lut = [[w10 ** (i * (j + 8)) for j in range(9)] for i in range(10)]
+
     for j in range(9):
         if j <= 2:
-            # extract(in_poly, (j + t) % 10, j) for t in range(5, 11)
-            f7 = extract(in_poly, (j + 5) % 10, j)
-            f8 = extract(in_poly, (j + 6) % 10, j)
-            f9 = extract(in_poly, (j + 7) % 10, j)
-            f0 = extract(in_poly, (j + 8) % 10, j)
-            f1 = extract(in_poly, (j + 9) % 10, j)
-            f2 = extract(in_poly, j, j)
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_4x_nof3456(f0, f1, f2, f7, f8, f9)
+            f7, f8, f9, f0, f1, f2 = [extract(in_poly, (j + t) % 10, j) for t in range(5, 11)]
+            hi_s = ntt10_4x_nof3456(f0, f1, f2, f7, f8, f9)
         else:
-            f8 = extract(in_poly, (j + 6) % 10, j)
-            f9 = extract(in_poly, (j + 7) % 10, j)
-            f0 = extract(in_poly, (j + 8) % 10, j)
-            f1 = extract(in_poly, (j + 9) % 10, j)
-            f2 = extract(in_poly, j, j)
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9 = ntt10_4x_nof34567(f0, f1, f2, f8, f9)
+            f8, f9, f0, f1, f2 = [extract(in_poly, (j + t) % 10, j) for t in range(6, 11)]
+            hi_s = ntt10_4x_nof34567(f0, f1, f2, f8, f9)
 
-        h0 = h0
-        h1 = h1 * w10 ** (j + 8)
-        h2 = h2 * w10 ** (2 * (j + 8))
-        h3 = h3 * w10 ** (3 * (j + 8))
-        h4 = h4 * w10 ** (4 * (j + 8))
-        h5 = h5 * w10 ** (5 * (j + 8))
-        h6 = h6 * w10 ** (6 * (j + 8))
-        h7 = h7 * w10 ** (7 * (j + 8))
-        h8 = h8 * w10 ** (8 * (j + 8))
-        h9 = h9 * w10 ** (9 * (j + 8))
+        for i in range(10):
+            out_ntt[i][j] = hi_s[i] * lut[i][j]
 
-        out_ntt[0][j] = h0
-        out_ntt[1][j] = h1
-        out_ntt[2][j] = h2
-        out_ntt[3][j] = h3
-        out_ntt[4][j] = h4
-        out_ntt[5][j] = h5
-        out_ntt[6][j] = h6
-        out_ntt[7][j] = h7
-        out_ntt[8][j] = h8
-        out_ntt[9][j] = h9
     return out_ntt
 
 def imain_lay1(in_ntt):
